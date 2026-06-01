@@ -1,4 +1,4 @@
-export type AppRole = "admin" | "commercial_lead" | "seller";
+export type AppRole = "platform_admin" | "admin" | "commercial_lead" | "seller";
 export type LeadStage = "lead" | "prospect" | "client";
 export type LeadStatus = "new" | "contacted" | "meeting_scheduled" | "proposal_sent" | "negotiation" | "won" | "lost";
 export type TaskType = "call" | "email" | "meeting" | "proposal" | "follow_up";

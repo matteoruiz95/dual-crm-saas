@@ -1,3 +1,5 @@
+import type { AppRole } from "@/types/crm";
+
 export const LEAD_STATUS = [
   { value: "new", label: "Nuevo" },
   { value: "contacted", label: "Contactado" },
@@ -24,7 +26,20 @@ export const TASK_STATUS = [
   { value: "cancelled", label: "Cancelada" },
 ] as const;
 
-export const MENU_ITEMS = [
+export const APP_ROLES: { value: AppRole; label: string }[] = [
+  { value: "platform_admin", label: "Administrador SaaS" },
+  { value: "admin", label: "Administrador" },
+  { value: "commercial_lead", label: "Líder comercial" },
+  { value: "seller", label: "Vendedor" },
+];
+
+export type MenuItem = {
+  href: string;
+  label: string;
+  roles?: AppRole[];
+};
+
+export const MENU_ITEMS: MenuItem[] = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/leads", label: "Leads" },
   { href: "/prospects", label: "Prospectos" },
@@ -33,6 +48,18 @@ export const MENU_ITEMS = [
   { href: "/pipeline", label: "Pipeline" },
   { href: "/calendar", label: "Calendario" },
   { href: "/reports", label: "Reportes" },
+
+  {
+    href: "/companies",
+    label: "Empresas",
+    roles: ["platform_admin"],
+  },
+  {
+    href: "/users",
+    label: "Usuarios",
+    roles: ["platform_admin", "admin"],
+  },
+
   { href: "/settings", label: "Configuración" },
-  {href: "/profile", label: "Mi perfil"}
-] as const;
+  { href: "/profile", label: "Mi perfil" },
+];

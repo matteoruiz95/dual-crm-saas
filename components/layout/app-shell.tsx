@@ -1,9 +1,20 @@
 import Link from "next/link";
-import { MENU_ITEMS } from "@/lib/constants";
+import { APP_ROLES, MENU_ITEMS } from "@/lib/constants";
 import { getCurrentProfile } from "@/lib/auth/get-current-profile";
+import { LogoutButton } from "@/components/auth/logout-button";
+import type { AppRole } from "@/types/crm";
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   const profile = await getCurrentProfile();
+  const role = profile.role as AppRole;
+
+  const roleLabel =
+    APP_ROLES.find((item) => item.value === role)?.label ?? profile.role;
+
+  const visibleMenuItems = MENU_ITEMS.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.includes(role);
+  });
 
   return (
     <div className="min-h-screen bg-dual-soft">
@@ -15,7 +26,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className="space-y-1">
-          {MENU_ITEMS.map((item) => (
+          {visibleMenuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -25,6 +36,11 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
         </nav>
+
+        {/* Cerrar sesión escritorio */}
+        <div className="absolute bottom-5 left-5 right-5">
+          <LogoutButton className="w-full bg-white/10 text-white hover:bg-white/20" />
+        </div>
       </aside>
 
       <main className="lg:pl-72">
@@ -39,11 +55,18 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
               </h1>
             </div>
 
-            <div className="text-right">
-              <div className="text-sm font-semibold text-slate-900">
-                {profile.full_name}
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <div className="text-sm font-semibold text-slate-900">
+                  {profile.full_name}
+                </div>
+                <div className="text-xs text-slate-500">{roleLabel}</div>
               </div>
-              <div className="text-xs text-slate-500">{profile.role}</div>
+
+              {/* Botón escritorio/tablet */}
+              <div className="hidden md:block lg:hidden">
+                <LogoutButton />
+              </div>
             </div>
           </div>
 
@@ -54,7 +77,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
             </summary>
 
             <nav className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-              {MENU_ITEMS.map((item) => (
+              {visibleMenuItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -63,6 +86,8 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
                   {item.label}
                 </Link>
               ))}
+
+              <LogoutButton className="mt-2 w-full" />
             </nav>
           </details>
         </header>

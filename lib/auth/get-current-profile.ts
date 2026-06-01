@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function getCurrentProfile() {
   const supabase = await createClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -11,7 +12,9 @@ export async function getCurrentProfile() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id, tenant_id, full_name, email, phone, role, is_active")
+    .select(
+      "id, tenant_id, full_name, email, phone, role, is_active, metadata, created_at, updated_at"
+    )
     .eq("id", user.id)
     .single();
 
