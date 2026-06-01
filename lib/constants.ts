@@ -34,4 +34,5 @@ export const MENU_ITEMS = [
   { href: "/calendar", label: "Calendario" },
   { href: "/reports", label: "Reportes" },
   { href: "/settings", label: "Configuración" },
+  {href: "/profile", label: "Mi perfil"}
 ] as const;
