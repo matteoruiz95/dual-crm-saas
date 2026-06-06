@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateLeadStatus } from "@/app/actions/leads";
 import { createTask } from "@/app/actions/tasks";
@@ -24,6 +25,14 @@ function getResponsible(
   }
 
   return responsible;
+}
+
+function getTemperatureLabel(value: string | null) {
+  const temperature = (value || "warm").toLowerCase();
+
+  if (temperature === "hot") return "HOT";
+  if (temperature === "cold") return "COLD";
+  return "WARM";
 }
 
 export default async function LeadDetailPage({
@@ -96,9 +105,23 @@ export default async function LeadDetailPage({
 
       <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card>
-          <CardTitle>Información general</CardTitle>
+          <div className="flex items-center justify-between gap-4">
+            <CardTitle>Información general</CardTitle>
+
+            <Link
+              href={`/leads/${lead.id}/edit`}
+              className="rounded-xl bg-dual-purple px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              Editar
+            </Link>
+          </div>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <Info
+              label="Prioridad comercial"
+              value={getTemperatureLabel(lead.lead_temperature)}
+            />
+
             <Info label="Correo" value={lead.email || "Sin correo"} />
             <Info label="Teléfono" value={lead.phone || "Sin teléfono"} />
 
@@ -131,12 +154,56 @@ export default async function LeadDetailPage({
               label="Valor estimado USD"
               value={currency(Number(lead.estimated_value_usd ?? 0), "USD")}
             />
+
+            <Info
+              label="Dueño / Contacto principal"
+              value={lead.owner_name || "Sin dueño"}
+            />
+
+            <Info label="País" value={lead.country || "Sin país"} />
+
+            <Info
+              label="Estado / Departamento"
+              value={lead.state_region || "Sin estado"}
+            />
+
+            <Info label="Ciudad" value={lead.city || "Sin ciudad"} />
+
+            <Info
+              label="Industria"
+              value={lead.industry || "Sin industria"}
+            />
+
+            <Info
+              label="Website"
+              value={lead.website_url || "Sin website"}
+            />
+
+            <Info
+              label="Instagram"
+              value={lead.instagram_url || "Sin Instagram"}
+            />
+
+            <Info
+              label="Servicio inicial"
+              value={lead.initial_service || "Sin servicio inicial"}
+            />
           </div>
 
+          {lead.probable_pain && (
+            <div className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-800">
+              <div className="mb-1 font-semibold">Dolor probable</div>
+              {lead.probable_pain}
+            </div>
+          )}
+
           {lead.observations && (
-            <p className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
+            <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
+              <div className="mb-1 font-semibold text-slate-900">
+                Observaciones
+              </div>
               {lead.observations}
-            </p>
+            </div>
           )}
         </Card>
 
