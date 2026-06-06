@@ -22,6 +22,28 @@ function getResponsible(
   return responsible;
 }
 
+function getTemperatureLabel(value: string | null) {
+  const temperature = (value || "warm").toLowerCase();
+
+  if (temperature === "hot") return "HOT";
+  if (temperature === "cold") return "COLD";
+  return "WARM";
+}
+
+function getTemperatureClass(value: string | null) {
+  const temperature = (value || "warm").toLowerCase();
+
+  if (temperature === "hot") {
+    return "bg-red-50 text-red-700 border-red-100";
+  }
+
+  if (temperature === "cold") {
+    return "bg-blue-50 text-blue-700 border-blue-100";
+  }
+
+  return "bg-yellow-50 text-yellow-700 border-yellow-100";
+}
+
 export default async function LeadsPage() {
   const supabase = await createClient();
 
@@ -35,6 +57,7 @@ export default async function LeadsPage() {
       phone,
       stage,
       status,
+      lead_temperature,
       estimated_value_cop,
       estimated_value_usd,
       responsible_user_id,
@@ -70,6 +93,7 @@ export default async function LeadsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
               <tr>
+                <th className="px-5 py-4">Prioridad</th>
                 <th className="px-5 py-4">Lead</th>
                 <th className="px-5 py-4">Contacto</th>
                 <th className="px-5 py-4">Estado</th>
@@ -85,6 +109,16 @@ export default async function LeadsPage() {
 
                 return (
                   <tr key={lead.id} className="hover:bg-slate-50">
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${getTemperatureClass(
+                          lead.lead_temperature
+                        )}`}
+                      >
+                        {getTemperatureLabel(lead.lead_temperature)}
+                      </span>
+                    </td>
+
                     <td className="px-5 py-4">
                       <Link
                         href={`/leads/${lead.id}`}
@@ -145,7 +179,7 @@ export default async function LeadsPage() {
                 <tr>
                   <td
                     className="px-5 py-8 text-center text-slate-500"
-                    colSpan={6}
+                    colSpan={7}
                   >
                     No hay leads creados.
                   </td>
