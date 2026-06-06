@@ -18,3 +18,11 @@ node_modules
 .vercel
 dist
 build
+
+node_modules
+.next
+.vercel
+.env
+.env.local
+.env.production
+.env.development
